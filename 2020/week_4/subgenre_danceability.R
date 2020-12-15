@@ -2,7 +2,6 @@
 library(tidyverse)
 library(ggdark)
 
-tuesdata <- tidytuesdayR::tt_load('2020-01-21') 
 tuesdata <- tidytuesdayR::tt_load(2020, week = 4)
 
 spotify_songs <- tuesdata$spotify_songs
@@ -16,7 +15,7 @@ spotify_songs %>%
   summarise(avg_danceability = mean(danceability)) %>%
   ungroup() %>%
   ggplot(aes(x = reorder(playlist_subgenre, avg_danceability), y=avg_danceability, fill=playlist_genre)) + 
-  geom_bar(stat="identity") + 
+  geom_bar(stat="identity", width = 0.40) + 
   coord_flip() + 
   theme(
     axis.title.x = element_blank(),
@@ -25,7 +24,8 @@ spotify_songs %>%
     legend.title = element_blank(),
     plot.title = element_text(size = 20),
   ) + 
-  labs(title = "Subgenre Danceability"
+  labs(title = "Subgenre Danceability",
+       caption = "@kbfoerster | #TidyTuesdasy 2020_week_4"
        )
 
 # TODO envisioning a thin (colored?) line with the dancing emoji on the ends for a fun twist
