@@ -2,6 +2,7 @@ library(tidyverse)
 library(ggplot2)
 library(ggthemes)
 library(wesanderson)
+library(ragg)
 
 tuesday <- tidytuesdayR::tt_load(2021, week=36)
 
@@ -43,7 +44,6 @@ region_sum <- bird_df %>%
 # creating our theme
 
 my_theme <- theme(
-  #plot.title=element_markdown(family='regular', hjust=0.5, size=45, color='black'),
   plot.title.position = 'plot',
   plot.caption = element_text(hjust=0.5),
   plot.caption.position = 'plot',
@@ -52,17 +52,23 @@ my_theme <- theme(
   # messing with axis
   axis.ticks = element_blank(),
   axis.line = element_blank(),
-  legend.title = element_blank()
+  legend.title = element_blank(),
+  axis.text.x = element_text(angle = 90)
 )
 
-ggplot(region_sum, aes(bioregions, count)) +
+bioregion_plot <- ggplot(region_sum, aes(bioregions, count)) +
   geom_col(aes(fill=urban_rural)) +
   labs(x='Bioregions',
        y='Bird Count',
        title='Bird Count by Bioregion',
-       #subtitle='Total bird count from 2014 to 2015 for several bioregions, further divided by rural vs urban sightings',
        caption='\nKyle Foerster | @kbfoerster | #TidyTuesday',
        legend='') +
   theme_economist() +
-  scale_fill_manual(values=wes_palette(n=2, name='Moonrise2'), name='')
-  #my_theme
+  scale_fill_manual(values=wes_palette(n=2, name='Moonrise2'), name='') + 
+  my_theme
+
+
+ggsave("bioregion_count.png",
+       plot=bioregion_plot,
+       device = agg_png(width = 6, height = 6, units = "in", res = 300))
+
